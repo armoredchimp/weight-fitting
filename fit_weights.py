@@ -43,17 +43,24 @@ MIN_TIERED = 8          # skip a position with fewer tiered players than this
 # Any name that doesn't match the data is reported, not silently dropped.
 # ---------------------------------------------------------------------------
 
+BASELINES = {
+    ("finishing", "Centre Forward"): 700,
+    ("finishing", "Left Wing"): 600,
+    ("finishing", "Right Wing"): 600,
+}
+
 TIERS = {
-    ("attacking", "Right Wing"): {
-        "Elite":   ["Bukayo Saka", "Mohamed Salah", "Mohammed Kudus", "Pedro Neto"],
-        "Good":    ["Yankuba Minteh", "Noni Madueke", "Omari Hutchinson",
-                    "Samuel Chukwueze", "Jarrod Bowen", "David Brooks",
-                    "Harry Wilson", "Jacob Murphy"],
-        "Average": ["Bryan Mbeumo", "Dango Ouattara", "Marcus Edwards", "Rayan",
-                    "Oscar Bobb", "Antoine Semenyo", "Amad Diallo"],
-        "Poor":    ["Dan Ndoye", "Brennan Johnson", "Loum Tchaouna",
-                    "Anthony Elanga", "Chemsdine Talbi", "Jhon Arias",
-                    "Rodrigo Gomes"],
+      ("finishing", "Centre Forward"): {
+        "Elite":   ["Erling Haaland", "Benjamin Sesko", "Junior Kroupi"],
+        "Good":    ["Igor Thiago", "Viktor Gyokeres", "Zian Flemming", "Hugo Ekitike",
+                    "Danny Welbeck", "Callum Wilson",  "Wilson Isidor", "Matheus Cunha",],
+        "Average": ["Beto", "Joao Pedro", "Ollie Watkins", "Lukas Nmecha",
+                    "Jean-Philippe Mateta", "Dominic Calvert-Lewin", "Taty Castellanos",
+                     "Raul Jimenez", "Nick Woltemade", "Igor Jesus", "Richarlison",],
+        "Poor":    ["Thierno Barry", "Brian Brobbey", "Evanilson", "Tolu Arokodare",
+                    "Adam Armstrong", "Jorgen Strand Larsen", "Georginio Rutter",
+                    "Hee-chan Hwang", "Rodrigo Muniz", "Randal Kolo Muani",
+                    "Lyle Foster", "Liam Delap"],
     },
 
     # ("attacking", "Right Wing"): { ... },
@@ -101,7 +108,7 @@ CATEGORIES = {
             "GoalsPer90": "+", "ShotsOnTargetPer90": "+",
             "BigChancesMissedPer90": "-", "OffsidesPer90": "-", "ShotsOffTargetPer90": "-",
             "PenaltiesMissedPer90": "-",
-            "HitWoodworkPer90": "?", "ShotsBlockedPer90": "?", "ShotsTotalPer90": "?",
+            "HitWoodworkPer90": "+", "ShotsBlockedPer90": "?", "ShotsTotalPer90": "?",
         },
         "profile": ["GoalsPer90", "ShotsOnTargetPer90", "ShotsTotalPer90"],
         "profile_raw": ["BigChancesMissedPer90", "ShotsOffTargetPer90"],
@@ -141,6 +148,7 @@ CATEGORIES = {
             "Cleansheets": "+", "ClearancesPer90": "+", "AerialsWonPer90": "+",
             "DuelsWonPercentage": "+", "LongBallsWonPer90": "+", "FoulsDrawnPer90": "+",
             "GoalsConcededPer90": "-", "ErrorLeadToGoal": "-", "FoulsPer90": "-",
+            
         },
         "profile": ["SavesPer90", "SavesInsideBoxPer90", "Cleansheets",
                     "AccuratePassesPercentage", "LongBallsWonPer90"],
@@ -268,6 +276,8 @@ def do_fit(only=None):
             w = w / np.abs(w).max() * MAX_WEIGHT
 
         scores = X @ w
+        base = BASELINES.get((cat, position), 0)
+        scores = scores + base
         ok = sum(1 for i in range(len(sub)) for j in range(len(sub))
                  if tier[i] > tier[j] and scores[i] > scores[j])
         pct = 100 * ok / len(A)
@@ -282,6 +292,8 @@ def do_fit(only=None):
         ))
 
         sets = ",\n  ".join(f'"{c}" = {round(v)}' for c, v in zip(cols, w))
+        if base:
+            sets += f',\n  "Baseline" = {base}'
         statements.append(
             f"-- {cat} / {position} — {len(sub)} tiered, {pct:.0f}% of pairs satisfied\n"
             f'update public."{spec["table"]}" set\n  {sets}\n'

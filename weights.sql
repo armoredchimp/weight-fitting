@@ -1,20 +1,13 @@
--- attacking / Right Wing — 26 tiered, 98% of pairs satisfied
-update public."getSeasonAttacking" set
-  "GoalsPer90" = 1727,
-  "AssistsPer90" = 3000,
-  "BigChancesCreatedPer90" = 1105,
-  "KeyPassesPer90" = 424,
-  "ShotsOnTargetPer90" = 0,
-  "SuccessfulDribblesPer90" = 263,
-  "AccurateCrossesPer90" = 557,
-  "ThroughBallsWonPer90" = 0,
-  "LongBallsWonPer90" = 382,
-  "HitWoodworkPer90" = 0,
-  "PenaltiesWonPer90" = 0,
-  "BigChancesMissedPer90" = 0,
-  "OffsidesPer90" = 0,
-  "OwnGoalsPer90" = 0,
-  "ShotsOffTargetPer90" = 0,
-  "DribbleAttemptsPer90" = 51,
-  "ShotsBlockedPer90" = 0
-where "Position" = 'Right Wing';
+-- finishing / Centre Forward — 33 tiered, 99% of pairs satisfied
+update public."getSeasonFinishing" set
+  "GoalsPer90" = 3000,
+  "ShotsOnTargetPer90" = 400,
+  "BigChancesMissedPer90" = -1000,
+  "OffsidesPer90" = -500,
+  "ShotsOffTargetPer90" = -50,
+  "PenaltiesMissedPer90" = -1500,
+  "HitWoodworkPer90" = 200,
+  "ShotsBlockedPer90" = 50,
+  "ShotsTotalPer90" = 150,
+  "Baseline" = 700
+where "Position" = 'Centre Forward';
