@@ -33,7 +33,7 @@ from scipy.optimize import lsq_linear
 TABLE = "prem_stats_2526_per90"
 MIN_MINUTES = 900
 
-ALPHA = 10             # ridge strength; higher spreads weight more evenly
+ALPHA = 200             # ridge strength; higher spreads weight more evenly
 MAX_WEIGHT = 3000       # largest magnitude in the output
 MIN_TIERED = 8          # skip a position with fewer tiered players than this
 
@@ -44,36 +44,25 @@ MIN_TIERED = 8          # skip a position with fewer tiered players than this
 # ---------------------------------------------------------------------------
 
 BASELINES = {
-    ("passing", "Attacking Midfield"): 500,
-    ("passing", "Central Midfield"): 450,
+    ("possession", "Central Midfield"): 300,
+   
 }
 
 TIERS = {
-    #     ("passing", "Attacking Midfield"): {
-    #     "Elite":   ["Rayan Cherki", "Bruno Fernandes", "Phil Foden", "Martin Odegaard"],
-    #     "Good":    ["Dominik Szoboszlai", "Mikkel Damsgaard", "Xavi Simons",
-    #                 "Florian Wirtz", "Bernardo Silva"],
-    #     "Average": ["Marcus Tavernier", "Hannibal", "Justin Kluivert",
-    #                 "Lucas Paqueta", "Eberechi Eze", "Brenden Aaronson",
-    #                 "Morgan Rogers"],
-    #     "Poor":    ["Cole Palmer", "Morgan Gibbs-White", "Emiliano Buendia",
-    #                 "Emile Smith Rowe", "Mason Mount", "Josh King"],
-    # },
-    ("passing", "Central Midfield"): {
-        "Elite":   ["Declan Rice", "Bruno Guimaraes", "Enzo Fernandez",
-                    "Pascal Gross", "Enzo Le Fee"],
-        "Good":    ["Sean Longstaff", "James Ward-Prowse", "Youri Tielemans",
-                    "John McGinn", "Mathias Jensen", "Kiernan Dewsbury-Hall",
-                    "Elliot Anderson", "Jacob Ramsey"],
-        "Average": ["Curtis Jones", "Tijjani Reijnders", "Mateus Fernandes",
-                    "Mikel Merino", "Sasa Lukic", "Alexis Mac Allister",
-                    "Jordan Henderson", "Ao Tanaka", "Lewis Miley",
-                    "Pape Matar Sarr", "Daichi Kamada", "Kobbie Mainoo"],
-        "Poor":    ["Alex Scott", "Josh Cullen", "Nicolas Dominguez",
-                    "Jean-Ricner Bellegarde", "Yasin Ayari", "Conor Gallagher",
-                    "Will Hughes", "Habib Diarra", "Joao Gomes",
-                    "Yegor Yarmolyuk", "Tim Iroegbunam", "Diego Gomez",
-                    "Joelinton", "Noah Sadiki", "Josh Laurent"],
+        ("possession", "Central Midfield"): {
+        "Elite":   ["Elliot Anderson", "Bruno Guimaraes", "Curtis Jones",
+                    "Enzo Fernandez", "Tijjani Reijnders"],
+        "Good":    ["James Ward-Prowse", "Declan Rice", "Pascal Gross",
+                    "Kobbie Mainoo", "Mikel Merino", "Alexis Mac Allister",
+                    "Joao Gomes", "Enzo Le Fee", "Sasa Lukic"],
+        "Average": ["Youri Tielemans", "Jordan Henderson", "Ao Tanaka",
+                    "Lewis Miley", "Mateus Fernandes", "Jacob Ramsey",
+                    "Alex Scott", "Kiernan Dewsbury-Hall", "Daichi Kamada",
+                    "Pape Matar Sarr", "Joelinton", "Sean Longstaff"],
+        "Poor":    ["Conor Gallagher", "Yegor Yarmolyuk", "Will Hughes",
+                    "Josh Cullen", "Noah Sadiki", "Jean-Ricner Bellegarde",
+                    "Diego Gomez", "Tim Iroegbunam", "Josh Laurent",
+                    "Nicolas Dominguez", "Yasin Ayari", "Habib Diarra"],
     },
 
     # ("attacking", "Right Wing"): { ... },
@@ -105,15 +94,16 @@ CATEGORIES = {
     "defensive": {
         "table": "getSeasonDefensive",
         "signs": {
-            "TacklesPer90": "+", "InterceptionsPer90": "+", "BlockedShotsPer90": "+",
-            "ClearancesPer90": "+", "CrossesBlockedPer90": "+", "AerialsWonPer90": "+",
+            "TacklesPer90": "?", "InterceptionsPer90": "+", "BlockedShotsPer90": "?",
+            "ClearancesPer90": "+", "CrossesBlockedPer90": "+", "AerialsWonPer90": "?",
             "DuelsWonPercentage": "+", "LongBallsWonPer90": "+", "Cleansheets": "+",
-            "FoulsPer90": "-", "GoalsConcededPer90": "-", "DribbledPastPer90": "-",
-            "ErrorLeadToGoal": "-",
+            "FoulsPer90": "-", "GoalsConcededPer90": "-", "DuelsWonPer90": "+", "DribbledPastPer90": "-",
+            "ErrorLeadToGoal": "-", "OwnGoalsPer90": "-"
         },
-        "profile": ["TacklesPer90", "InterceptionsPer90", "ClearancesPer90",
-                    "BlockedShotsPer90", "AerialsWonPer90", "DuelsWonPercentage"],
-        "profile_raw": ["DribbledPastPer90", "FoulsPer90"],
+        "profile": ["TacklesPer90", "GoalsConcededPer90", "ClearancesPer90",
+                    "BlockedShotsPer90", "AerialsWonPer90", "DuelsWonPer90", "DuelsWonPercentage"],
+        "profile_raw": ["DribbledPastPer90", "FoulsPer90", "OwnGoalsPer90"],
+        "profile_invert": ["GoalsConcededPer90"],
     },
     "finishing": {
         "table": "getSeasonFinishing",
@@ -121,7 +111,7 @@ CATEGORIES = {
             "GoalsPer90": "+", "ShotsOnTargetPer90": "+",
             "BigChancesMissedPer90": "-", "OffsidesPer90": "-", "ShotsOffTargetPer90": "-",
             "PenaltiesMissedPer90": "-",
-            "HitWoodworkPer90": "+", "ShotsBlockedPer90": "?", "ShotsTotalPer90": "?",
+            "HitWoodworkPer90": "+", "ShotsBlockedPer90": "-", "ShotsTotalPer90": "?",
         },
         "profile": ["GoalsPer90", "ShotsOnTargetPer90", "ShotsTotalPer90"],
         "profile_raw": ["BigChancesMissedPer90", "ShotsOffTargetPer90"],
@@ -142,17 +132,17 @@ CATEGORIES = {
     "possession": {
         "table": "getSeasonPossession",
         "signs": {
-            "AccuratePassesPer90": "+", "PassesPer90": "+", "SuccessfulDribblesPer90": "+",
-            "LongBallsWonPer90": "+", "FoulsDrawnPer90": "+", "KeyPassesPer90": "+",
-            "BigChancesCreatedPer90": "+", "ThroughBallsWonPer90": "+",
-            "AccuratePassesPercentage": "+", "DuelsWonPer90": "+", "ThroughBallsPer90": "+",
-            "DispossessedPer90": "-", "FoulsPer90": "-", "ShotsOffTargetPer90": "-",
-            "OffsidesPer90": "-",
+            "AccuratePassesPer90": "+", "AccuratePassesPercentage": "+",
+            "SuccessfulDribblesPer90": "+", "FoulsDrawnPer90": "+", "DuelsWonPer90": "+",
+            "LongBallsWonPer90": "+",
+            "DispossessedPer90": "-", "FoulsPer90": "-",
             "LongBallsPer90": "?",
         },
         "profile": ["AccuratePassesPer90", "AccuratePassesPercentage",
-                    "SuccessfulDribblesPer90", "DuelsWonPer90", "FoulsDrawnPer90"],
+                    "SuccessfulDribblesPer90", "DuelsWonPer90", "FoulsDrawnPer90",
+                    "ThroughBallsPer90", "KeyPassesPer90", "BigChancesCreatedPer90"],
         "profile_raw": ["DispossessedPer90"],
+        "profile_invert": ["DispossessedPer90"],
     },
     "keeping": {
         "table": "getKeeperScore",
@@ -215,10 +205,12 @@ def do_profile(cat):
     df = load(pct_cols + raw_cols)
 
     out = df[["PlayerName", "DetailedPosition", "MinutesPlayed"]].copy()
+    invert = set(spec.get("profile_invert", []))
     for c in pct_cols:
-        out[c.replace("Per90", "")] = (
-            df.groupby("DetailedPosition")[c].rank(pct=True) * 100
-        ).round()
+        pct = df.groupby("DetailedPosition")[c].rank(pct=True) * 100
+        if c in invert:
+            pct = 100 - pct
+        out[c.replace("Per90", "")] = pct.round()
     out["composite"] = out[[c.replace("Per90", "") for c in pct_cols]].mean(axis=1).round()
     for c in raw_cols:
         out[c.replace("Per90", "") + "_raw"] = df[c].round(2)
