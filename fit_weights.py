@@ -33,7 +33,7 @@ from scipy.optimize import lsq_linear
 TABLE = "prem_stats_2526_per90"
 MIN_MINUTES = 900
 
-ALPHA = 8             # ridge strength; higher spreads weight more evenly
+ALPHA = 10             # ridge strength; higher spreads weight more evenly
 MAX_WEIGHT = 3000       # largest magnitude in the output
 MIN_TIERED = 8          # skip a position with fewer tiered players than this
 
@@ -44,23 +44,36 @@ MIN_TIERED = 8          # skip a position with fewer tiered players than this
 # ---------------------------------------------------------------------------
 
 BASELINES = {
-    ("finishing", "Centre Forward"): 700,
-    ("finishing", "Left Wing"): 600,
-    ("finishing", "Right Wing"): 600,
+    ("passing", "Attacking Midfield"): 500,
+    ("passing", "Central Midfield"): 450,
 }
 
 TIERS = {
-      ("finishing", "Centre Forward"): {
-        "Elite":   ["Erling Haaland", "Benjamin Sesko", "Junior Kroupi"],
-        "Good":    ["Igor Thiago", "Viktor Gyokeres", "Zian Flemming", "Hugo Ekitike",
-                    "Danny Welbeck", "Callum Wilson",  "Wilson Isidor", "Matheus Cunha",],
-        "Average": ["Beto", "Joao Pedro", "Ollie Watkins", "Lukas Nmecha",
-                    "Jean-Philippe Mateta", "Dominic Calvert-Lewin", "Taty Castellanos",
-                     "Raul Jimenez", "Nick Woltemade", "Igor Jesus", "Richarlison",],
-        "Poor":    ["Thierno Barry", "Brian Brobbey", "Evanilson", "Tolu Arokodare",
-                    "Adam Armstrong", "Jorgen Strand Larsen", "Georginio Rutter",
-                    "Hee-chan Hwang", "Rodrigo Muniz", "Randal Kolo Muani",
-                    "Lyle Foster", "Liam Delap"],
+    #     ("passing", "Attacking Midfield"): {
+    #     "Elite":   ["Rayan Cherki", "Bruno Fernandes", "Phil Foden", "Martin Odegaard"],
+    #     "Good":    ["Dominik Szoboszlai", "Mikkel Damsgaard", "Xavi Simons",
+    #                 "Florian Wirtz", "Bernardo Silva"],
+    #     "Average": ["Marcus Tavernier", "Hannibal", "Justin Kluivert",
+    #                 "Lucas Paqueta", "Eberechi Eze", "Brenden Aaronson",
+    #                 "Morgan Rogers"],
+    #     "Poor":    ["Cole Palmer", "Morgan Gibbs-White", "Emiliano Buendia",
+    #                 "Emile Smith Rowe", "Mason Mount", "Josh King"],
+    # },
+    ("passing", "Central Midfield"): {
+        "Elite":   ["Declan Rice", "Bruno Guimaraes", "Enzo Fernandez",
+                    "Pascal Gross", "Enzo Le Fee"],
+        "Good":    ["Sean Longstaff", "James Ward-Prowse", "Youri Tielemans",
+                    "John McGinn", "Mathias Jensen", "Kiernan Dewsbury-Hall",
+                    "Elliot Anderson", "Jacob Ramsey"],
+        "Average": ["Curtis Jones", "Tijjani Reijnders", "Mateus Fernandes",
+                    "Mikel Merino", "Sasa Lukic", "Alexis Mac Allister",
+                    "Jordan Henderson", "Ao Tanaka", "Lewis Miley",
+                    "Pape Matar Sarr", "Daichi Kamada", "Kobbie Mainoo"],
+        "Poor":    ["Alex Scott", "Josh Cullen", "Nicolas Dominguez",
+                    "Jean-Ricner Bellegarde", "Yasin Ayari", "Conor Gallagher",
+                    "Will Hughes", "Habib Diarra", "Joao Gomes",
+                    "Yegor Yarmolyuk", "Tim Iroegbunam", "Diego Gomez",
+                    "Joelinton", "Noah Sadiki", "Josh Laurent"],
     },
 
     # ("attacking", "Right Wing"): { ... },
@@ -122,8 +135,8 @@ CATEGORIES = {
             "AccuratePassesPercentage": "+", "ThroughBallsWonPer90": "+",
             "LongBallsPer90": "?", "TotalCrossesPer90": "?",
         },
-        "profile": ["PassesPer90", "AccuratePassesPercentage", "KeyPassesPer90",
-                    "ThroughBallsPer90", "LongBallsPer90", "AccurateCrossesPer90"],
+        "profile": ["AssistsPer90", "AccuratePassesPercentage", "KeyPassesPer90",
+                    "ThroughBallsPer90", "BigChancesCreatedPer90", "AccurateCrossesPer90"],
         "profile_raw": [],
     },
     "possession": {
@@ -148,7 +161,7 @@ CATEGORIES = {
             "Cleansheets": "+", "ClearancesPer90": "+", "AerialsWonPer90": "+",
             "DuelsWonPercentage": "+", "LongBallsWonPer90": "+", "FoulsDrawnPer90": "+",
             "GoalsConcededPer90": "-", "ErrorLeadToGoal": "-", "FoulsPer90": "-",
-            
+
         },
         "profile": ["SavesPer90", "SavesInsideBoxPer90", "Cleansheets",
                     "AccuratePassesPercentage", "LongBallsWonPer90"],
@@ -165,6 +178,9 @@ TIER_NAMES = {v: k for k, v in TIER_VALUES.items()}
 def norm(name):
     s = unicodedata.normalize("NFKD", str(name))
     s = "".join(c for c in s if not unicodedata.combining(c))
+    for a, b in (("ø", "o"), ("Ø", "O"), ("æ", "ae"), ("Æ", "AE"),
+                 ("ð", "d"), ("Ð", "D"), ("ł", "l"), ("Ł", "L"), ("þ", "th")):
+        s = s.replace(a, b)
     return " ".join(s.split()).casefold()
 
 
