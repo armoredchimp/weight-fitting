@@ -44,27 +44,22 @@ MIN_TIERED = 8          # skip a position with fewer tiered players than this
 # ---------------------------------------------------------------------------
 
 BASELINES = {
-    ("possession", "Central Midfield"): 300,
+    ("keeping", "Goalkeeper"): 300,
    
 }
 
 TIERS = {
-        ("possession", "Central Midfield"): {
-        "Elite":   ["Elliot Anderson", "Bruno Guimaraes", "Curtis Jones",
-                    "Enzo Fernandez", "Tijjani Reijnders"],
-        "Good":    ["James Ward-Prowse", "Declan Rice", "Pascal Gross",
-                    "Kobbie Mainoo", "Mikel Merino", "Alexis Mac Allister",
-                    "Joao Gomes", "Enzo Le Fee", "Sasa Lukic"],
-        "Average": ["Youri Tielemans", "Jordan Henderson", "Ao Tanaka",
-                    "Lewis Miley", "Mateus Fernandes", "Jacob Ramsey",
-                    "Alex Scott", "Kiernan Dewsbury-Hall", "Daichi Kamada",
-                    "Pape Matar Sarr", "Joelinton", "Sean Longstaff"],
-        "Poor":    ["Conor Gallagher", "Yegor Yarmolyuk", "Will Hughes",
-                    "Josh Cullen", "Noah Sadiki", "Jean-Ricner Bellegarde",
-                    "Diego Gomez", "Tim Iroegbunam", "Josh Laurent",
-                    "Nicolas Dominguez", "Yasin Ayari", "Habib Diarra"],
+        ("keeping", "Goalkeeper"): {
+        "Elite":   ["David Raya", "Gianluigi Donnarumma", "Alisson"],
+        "Good":    ["Bart Verbruggen", "Senne Lammens", "Robin Roefs",
+                    "Caoimhin Kelleher", "Matz Sels", "Jordan Pickford",
+                    "Karl Darlow"],
+        "Average": ["Emiliano Martinez", "Bernd Leno", "Dean Henderson",
+                    "Robert Sanchez", "Djordje Petrovic", "Nick Pope"],
+        "Poor":    ["Mads Hermansen", "Guglielmo Vicario", "Jose Sa",
+                    "Lucas Perri", "Alphonse Areola", "Sam Johnstone",
+                    "Martin Dubravka"],
     },
-
     # ("attacking", "Right Wing"): { ... },
     # ("defensive", "Centre Back"): { ... },
 }
@@ -145,7 +140,7 @@ CATEGORIES = {
         "profile_invert": ["DispossessedPer90"],
     },
     "keeping": {
-        "table": "getKeeperScore",
+        "table": "getSeasonKeeping",
         "signs": {
             "SavesPer90": "+", "SavesInsideBoxPer90": "+", "PenaltiesSavedPer90": "+",
             "Cleansheets": "+", "ClearancesPer90": "+", "AerialsWonPer90": "+",
@@ -154,8 +149,9 @@ CATEGORIES = {
 
         },
         "profile": ["SavesPer90", "SavesInsideBoxPer90", "Cleansheets",
-                    "AccuratePassesPercentage", "LongBallsWonPer90"],
+                     "LongBallsWonPer90", "GoalsConcededPer90"],
         "profile_raw": ["GoalsConcededPer90"],
+         "profile_invert": ["GoalsConcededPer90"],
     },
 }
 

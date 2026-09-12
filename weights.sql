@@ -1,13 +1,16 @@
--- possession / Central Midfield — 38 tiered, 81% of pairs satisfied
-update public."getSeasonPossession" set
-  "AccuratePassesPer90" = 564,
-  "AccuratePassesPercentage" = 217,
-  "SuccessfulDribblesPer90" = 0,
-  "FoulsDrawnPer90" = 3000,
-  "DuelsWonPer90" = 0,
-  "LongBallsWonPer90" = 0,
-  "DispossessedPer90" = 0,
-  "FoulsPer90" = 0,
-  "LongBallsPer90" = -650,
+-- keeping / Goalkeeper — 23 tiered, 92% of pairs satisfied
+update public."getSeasonKeeping" set
+  "SavesPer90" = 0,
+  "SavesInsideBoxPer90" = 0,
+  "PenaltiesSavedPer90" = 3000,
+  "Cleansheets" = 20,
+  "ClearancesPer90" = 0,
+  "AerialsWonPer90" = 0,
+  "DuelsWonPercentage" = 0,
+  "LongBallsWonPer90" = 11,
+  "FoulsDrawnPer90" = 68,
+  "GoalsConcededPer90" = -599,
+  "ErrorLeadToGoal" = -19,
+  "FoulsPer90" = -46,
   "Baseline" = 300
-where "Position" = 'Central Midfield';
+where "Position" = 'Goalkeeper';
